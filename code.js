@@ -9,7 +9,25 @@ const pythonProcess = spawn(pythonPath, ['script.py']);
 let speeds = [];
 let packetQueue = [];
 
+let isFrozen = false;
+const freezeBtn = document.getElementById('freezeBtn');
+
+freezeBtn.addEventListener('click', () => {
+    isFrozen = !isFrozen;
+
+    if (isFrozen) {
+        freezeBtn.textContent = "Unfreeze Capturing";
+        freezeBtn.classList.add('active');
+    } else {
+        freezeBtn.textContent = "Freeze Capturing";
+        freezeBtn.classList.remove('active');
+    }
+});
+
 pythonProcess.stdout.on('data', (data) => {
+    // REQUIREMENT: If frozen, discard incoming packets (packet loss)
+    if (isFrozen) return;
+
     try {
         const lines = data.toString().trim().split('\n');
         lines.forEach(line => {
@@ -17,7 +35,7 @@ pythonProcess.stdout.on('data', (data) => {
             packetQueue.push(parsed);
         });
     } catch (e) {
-        // Silently catch partial JSON chunks
+        // Handle partial chunks
     }
 });
 
@@ -26,7 +44,9 @@ pythonProcess.stderr.on('data', (data) => {
 });
 
 function processPackets() {
-    if (packetQueue.length === 0) return;
+    // REQUIREMENT: If frozen OR no packets, do nothing.
+    // This keeps the current logs and graph exactly as they are.
+    if (isFrozen || packetQueue.length === 0) return;
 
     while (packetQueue.length > 0) {
         const currentPacket = packetQueue.shift();
@@ -47,11 +67,15 @@ function processPackets() {
             logs.removeChild(logs.firstChild);
         }
 
+        // Add the speed from the packet to the graph history
         speeds.push(currentPacket[4]);
-        if (speeds.length > 100) speeds.shift(); // Extended graph history to 100 points
+        if (speeds.length > 100) speeds.shift();
     }
 
+    // Auto-scroll to the bottom of the logs
     logs.scrollTop = logs.scrollHeight;
+
+    // Refresh the visualization
     drawGraph();
 }
 

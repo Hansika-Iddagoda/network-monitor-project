@@ -44,3 +44,20 @@ canvas {
     border: 1px solid lime;
     background-color: rgba(0, 0, 0, 0.7);
 }
+
+#freezeBtn {
+    background-color: #333;
+    color: lime;
+    border: 1px solid lime;
+    padding: 8px 15px;
+    cursor: pointer;
+    font-family: 'Courier New', monospace;
+    margin-bottom: 10px;
+    transition: 0.3s;
+}
+
+#freezeBtn.active {
+    background-color: red;
+    color: white;
+    border-color: white;
+}

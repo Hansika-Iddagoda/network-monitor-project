@@ -11,7 +11,10 @@
 <body>
 
     <div id="monitor">
-        <h2>Live Network Monitor</h2>
+        <div class="header" style="display: flex; justify-content: space-between;">
+            <h2>Live Network Monitor</h2>
+            <button id="freezeBtn">Freeze Capturing</button>
+        </div>
         <canvas id="speedGraph" width="600" height="200"></canvas>
         <div id="logs"></div>
     </div>
