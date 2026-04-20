@@ -3,68 +3,68 @@ const canvas = document.getElementById('speedGraph');
 const ctx = canvas.getContext('2d');
 const { spawn } = require('child_process');
 
-// Look inside your 'scapy-env' folder for 'bin/python'
-const pythonPath = '/Users/hansikaiddagoda/Documents/Real-Time Network Traffic Monitor/Combine/scapy-env/bin/python';
-
+const pythonPath = '/Users/hansikaiddagoda/Documents/Real-Time Network Traffic Monitor/network monitor/scapy-env/bin/python';
 const pythonProcess = spawn(pythonPath, ['script.py']);
 
 let speeds = [];
-let lastPacket = null; // Store the latest packet globally
+let packetQueue = [];
 
 pythonProcess.stdout.on('data', (data) => {
     try {
-        // Parse the JSON string coming from Python
-        lastPacket = JSON.parse(data.toString().trim());
+        const lines = data.toString().trim().split('\n');
+        lines.forEach(line => {
+            const parsed = JSON.parse(line);
+            packetQueue.push(parsed);
+        });
     } catch (e) {
-        // This catches partial lines or non-JSON output
+        // Silently catch partial JSON chunks
     }
 });
 
-// Optional: Log errors if Python fails (like permission issues)
 pythonProcess.stderr.on('data', (data) => {
     console.error(`Python Error: ${data}`);
 });
 
-function getRandomSpeed() {
-    return (Math.random() * 100).toFixed(2);
-}
+function processPackets() {
+    if (packetQueue.length === 0) return;
 
-function generateLog() {
-    if (!lastPacket) return;
+    while (packetQueue.length > 0) {
+        const currentPacket = packetQueue.shift();
 
-    // Use the speed calculated by Python (index 4)
-    const currentSpeed = lastPacket[4];
+        // Protocol-based coloring
+        let colorClass = 'red'; // Default (UDP/Other)
+        if (currentPacket[0] === 'TCP') colorClass = 'green';
+        if (currentPacket[0] === 'ARP' || currentPacket[0] === 'ICMP') colorClass = 'blue';
 
-    // We only push to the graph if the speed is updated or periodically
-    speeds.push(currentSpeed);
-    if (speeds.length > 50) speeds.shift();
+        const line = document.createElement('div');
+        line.className = `line ${colorClass}`;
+        line.textContent = `Protocol: ${currentPacket[0]} | SRC: ${currentPacket[1]} | DST: ${currentPacket[2]} | SIZE: ${currentPacket[3]} | SPEED: ${currentPacket[4]} Mbps`;
 
-    const colorClass = lastPacket[0] === 'TCP' ? 'green' : 'red';
-    const line = document.createElement('div');
-    line.className = `line ${colorClass}`;
+        logs.appendChild(line);
 
-    // Updated text content
-    line.textContent = `Protocol: ${lastPacket[0]} | SRC: ${lastPacket[1]} | DST: ${lastPacket[2]} | SIZE: ${lastPacket[3]} | SPEED: ${currentSpeed} Mbps`;
+        // Optimization: Keep only the last 100 log entries to prevent memory lag
+        if (logs.childNodes.length > 100) {
+            logs.removeChild(logs.firstChild);
+        }
 
-    logs.appendChild(line);
+        speeds.push(currentPacket[4]);
+        if (speeds.length > 100) speeds.shift(); // Extended graph history to 100 points
+    }
+
     logs.scrollTop = logs.scrollHeight;
-
-    lastPacket = null;
+    drawGraph();
 }
 
 function drawGraph() {
     ctx.clearRect(0, 0, canvas.width, canvas.height);
-
-    // Find the highest speed in our array to scale the graph automatically
-    const maxSpeed = Math.max(...speeds, 10); // Minimum scale of 10 Mbps
+    const maxSpeed = Math.max(...speeds, 5); // Scale to at least 5 Mbps
 
     ctx.beginPath();
     ctx.strokeStyle = '#00ff00';
     ctx.lineWidth = 2;
 
     speeds.forEach((val, i) => {
-        const x = i * (canvas.width / 50);
-        // Scale Y relative to the maxSpeed found
+        const x = i * (canvas.width / (speeds.length - 1 || 1));
         const y = canvas.height - (val / maxSpeed) * canvas.height;
 
         if (i === 0) ctx.moveTo(x, y);
@@ -73,7 +73,9 @@ function drawGraph() {
     ctx.stroke();
 }
 
-setInterval(() => {
-    generateLog();
-    drawGraph();
-}, 1); // Faster refresh for a "live" feel
+function updateUI() {
+    processPackets();
+    requestAnimationFrame(updateUI);
+}
+
+updateUI();
