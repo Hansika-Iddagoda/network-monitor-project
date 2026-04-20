@@ -1,0 +1,46 @@
+body {
+    background-color: black;
+    color: lime;
+    font-family: 'Courier New', monospace;
+    margin: 0;
+    padding: 0;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+}
+
+#monitor {
+    width: 650px;
+    padding: 20px;
+    border: 2px solid red;
+    border-radius: 12px;
+    background-color: rgba(0, 0, 0, 0.9);
+    overflow: hidden;
+}
+
+#logs {
+    height: 250px;
+    overflow-y: auto;
+    margin-top: 20px;
+    border-top: 1px solid lime;
+    padding-top: 10px;
+}
+
+.line {
+    white-space: nowrap;
+    display: black;
+}
+
+.green {
+    color: #00ff00;
+}
+
+.red {
+    color: #ff3333
+}
+
+canvas {
+    border: 1px solid lime;
+    background-color: rgba(0, 0, 0, 0.7);
+}
