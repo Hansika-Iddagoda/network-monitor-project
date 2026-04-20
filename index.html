@@ -11,13 +11,22 @@
 <body>
 
     <div id="monitor">
-        <div class="header" style="display: flex; justify-content: space-between;">
-            <h2>Live Network Monitor</h2>
-            <button id="freezeBtn">Freeze Capturing</button>
-        </div>
-        <canvas id="speedGraph" width="600" height="200"></canvas>
-        <div id="logs"></div>
+    <div id="header">
+        <h2>Live Network Monitor</h2>
+        <button id="freezeBtn">Freeze Capturing</button>
     </div>
+    <canvas id="speedGraph" width="600" height="200"></canvas>
+    
+    <div class="line header-row">
+        <span>PROTO</span>
+        <span>SOURCE IP</span>
+        <span>DEST IP</span>
+        <span>SIZE</span>
+        <span>SPEED</span>
+    </div>
+
+    <div id="logs"></div>
+</div>
 
     <script src="code.js"></script>
 </body>

@@ -44,40 +44,42 @@ pythonProcess.stderr.on('data', (data) => {
 });
 
 function processPackets() {
-    // REQUIREMENT: If frozen OR no packets, do nothing.
-    // This keeps the current logs and graph exactly as they are.
     if (isFrozen || packetQueue.length === 0) return;
 
     while (packetQueue.length > 0) {
         const currentPacket = packetQueue.shift();
-
-        // Protocol-based coloring
-        let colorClass = 'red'; // Default (UDP/Other)
+        
+        let colorClass = 'red';
         if (currentPacket[0] === 'TCP') colorClass = 'green';
+        if (currentPacket[0] === 'QUIC') colorClass = 'lime';
         if (currentPacket[0] === 'ARP' || currentPacket[0] === 'ICMP') colorClass = 'blue';
 
-        const line = document.createElement('div');
-        line.className = `line ${colorClass}`;
-        line.textContent = `Protocol: ${currentPacket[0]} | SRC: ${currentPacket[1]} | DST: ${currentPacket[2]} | SIZE: ${currentPacket[3]} | SPEED: ${currentPacket[4]} Mbps`;
+        const row = document.createElement('div');
+        row.className = `line ${colorClass}`;
 
-        logs.appendChild(line);
+        // Create the individual cells
+        row.innerHTML = `
+            <span>${currentPacket[0]}</span>
+            <span>${currentPacket[1]}</span>
+            <span>${currentPacket[2]}</span>
+            <span class="col-size">${currentPacket[3]} B</span>
+            <span>${currentPacket[4]} Mbps</span>
+        `;
 
-        // Optimization: Keep only the last 100 log entries to prevent memory lag
+        logs.appendChild(row);
+
         if (logs.childNodes.length > 100) {
             logs.removeChild(logs.firstChild);
         }
 
-        // Add the speed from the packet to the graph history
         speeds.push(currentPacket[4]);
         if (speeds.length > 100) speeds.shift();
     }
 
-    // Auto-scroll to the bottom of the logs
     logs.scrollTop = logs.scrollHeight;
-
-    // Refresh the visualization
     drawGraph();
 }
+
 
 function drawGraph() {
     ctx.clearRect(0, 0, canvas.width, canvas.height);

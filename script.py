@@ -29,7 +29,7 @@ def packet_callback(packet):
             6: "TCP", 
             17: "UDP", 
             41: "IPv6",
-            89: "OSPF"
+            89: "OSPF",
         }
         proto_name = mapping.get(proto, f"IP({proto})")
         
@@ -38,6 +38,11 @@ def packet_callback(packet):
         proto_name = "ARP"
         src_ip = packet["ARP"].psrc  # ARP Source Protocol Address
         dst_ip = packet["ARP"].pdst  # ARP Destination Protocol Address
+
+    if proto_name == "UDP" and packet.haslayer("UDP"):
+        # Port 443 is the standard for QUIC (HTTP/3)
+        if packet["UDP"].sport == 443 or packet["UDP"].dport == 443:
+            proto_name = "QUIC"
 
     # 3. Calculate speed (bits per second transformed to Mbps)
     current_time = time.time()

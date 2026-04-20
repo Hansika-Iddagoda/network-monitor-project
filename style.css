@@ -19,18 +19,34 @@ body {
     overflow: hidden;
 }
 
+#header {
+    display: flex; 
+    justify-content: space-between;
+}
+
 #logs {
     height: 250px;
     overflow-y: auto;
-    margin-top: 20px;
-    border-top: 1px solid lime;
+    border-top: None;
     padding-top: 10px;
 }
 
 .line {
-    white-space: nowrap;
-    display: black;
+    display: grid;
+    grid-template-columns: 80px 140px 140px 80px 100px;
+    gap: 10px;
+    padding: 5px;
+    font-family: 'Courier New', monospace;
 }
+
+.header-row {
+    background-color: rgba(0, 255, 0, 0.1); /* Subtle background for header */
+    border-bottom: 2px solid lime;
+    margin-top: 20px;
+    color: white;
+}
+
+.col-size { text-align: right; }
 
 .green {
     color: #00ff00;
