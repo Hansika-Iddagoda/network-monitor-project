@@ -4,6 +4,7 @@ import time
 from scapy.all import sniff
 
 # Global variables for speed calculation
+start_time = time.time()
 last_time = time.time()
 bytes_count = 0
 
@@ -57,7 +58,7 @@ def packet_callback(packet):
     
     # 4. Prepare and send data to JS
     # We round speed_mbps to 2 decimal places
-    data = [proto_name, src_ip, dst_ip, size, round(speed_mbps, 2)]
+    data = [proto_name, src_ip, dst_ip, size, round(speed_mbps, 2), format(current_time-start_time, '.4f')]
     print(json.dumps(data))
     sys.stdout.flush()
 

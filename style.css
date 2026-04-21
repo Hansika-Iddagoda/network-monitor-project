@@ -33,7 +33,7 @@ body {
 
 .line {
     display: grid;
-    grid-template-columns: 80px 140px 140px 80px 100px;
+    grid-template-columns: 80px 80px 140px 140px 80px 100px;
     gap: 10px;
     padding: 5px;
     font-family: 'Courier New', monospace;
@@ -210,7 +210,7 @@ canvas {
 }
 
 .hide-speed .line {
-    grid-template-columns: 80px 140px 140px 80px;
+    grid-template-columns: 80px 80px 140px 140px 80px;
 }
 
 .hide-speed .col-speed {

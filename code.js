@@ -97,6 +97,7 @@ function processPackets() {
 
         // Create the individual cells
         row.innerHTML = `
+            <span>${currentPacket[5]}</span>
             <span>${currentPacket[0]}</span>
             <span>${currentPacket[1]}</span>
             <span>${currentPacket[2]}</span>
