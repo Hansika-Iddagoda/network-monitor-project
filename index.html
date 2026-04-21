@@ -10,10 +10,37 @@
 
 <body>
 
-    <div id="monitor">
+    <div id="monitor" class="hide-speed">
     <div id="header">
         <h2>Live Network Monitor</h2>
-        <button id="freezeBtn">Freeze Capturing</button>
+        <div id="controls">
+            <button id="freezeBtn">Freeze Capturing</button>
+            <button id="clearBtn">Clear Logs</button>
+            <button id="exportBtn">Export Logs</button>
+            <div class="dropdown">
+                <button id="settingsBtn">SETTINGS ▾</button>
+                <div id="dropdownContent" class="dropdown-menu">
+
+                    <label class="toggle-button">
+                        <input type="checkbox" id="logToggle" checked>
+                        <span class="button-surface">
+                            <span class="tick-box"></span>
+                            Auto Scroll
+                        </span>
+                    </label>
+
+                    <div id="catagories">
+                        <label class="toggle-button">
+                            <input type="checkbox" id="speedToggle"> 
+                            <span class="button-surface">
+                                <span class="tick-box"></span>
+                                Show Speed
+                            </span>
+                        </label>
+                    </div>
+                </div>
+            </div>
+        </div>
     </div>
     <canvas id="speedGraph" width="600" height="200"></canvas>
     
@@ -22,7 +49,7 @@
         <span>SOURCE IP</span>
         <span>DEST IP</span>
         <span>SIZE</span>
-        <span>SPEED</span>
+        <span class="col-speed">SPEED</span>
     </div>
 
     <div id="logs"></div>

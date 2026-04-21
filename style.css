@@ -77,3 +77,142 @@ canvas {
     color: white;
     border-color: white;
 }
+
+#clearBtn {
+    background-color: #333;
+    color: lime;
+    border: 1px solid lime;
+    padding: 8px 15px;
+    cursor: pointer;
+    font-family: 'Courier New', monospace;
+    margin-bottom: 10px;
+}
+
+#exportBtn {
+    background-color: #333;
+    color: lime;
+    border: 1px solid lime;
+    padding: 8px 15px;
+    cursor: pointer;
+    font-family: 'Courier New', monospace;
+    margin-bottom: 10px;
+    transition: 0.3s;
+}
+
+#catBtn {
+    background-color: #333;
+    color: lime;
+    border: 1px solid lime;
+    padding: 8px 15px;
+    cursor: pointer;
+    font-family: 'Courier New', monospace;
+    margin-bottom: 10px;
+    transition: 0.3s;
+}
+
+.controls {
+    display: flex;
+    gap: 10px;
+    margin-bottom: 15px;
+}
+
+/* Dropdown Container */
+.dropdown {
+    position: relative;
+    display: inline-block;
+}
+
+#settingsBtn {
+    background-color: #333;
+    color: lime;
+    border: 1px solid lime;
+    padding: 8px 15px;
+    cursor: pointer;
+    font-family: 'Courier New', monospace;
+}
+
+/* The actual menu */
+.dropdown-menu {
+    display: none; /* Hidden by default */
+    position: absolute;
+    background-color: #111;
+    min-width: 160px;
+    box-shadow: 0px 8px 16px 0px rgba(0,255,0,0.2);
+    border: 1px solid lime;
+    z-index: 100; /* Ensure it stays above the graph */
+    right: 0;
+}
+
+/* Links inside the dropdown */
+.dropdown-menu a {
+    color: lime;
+    padding: 12px 16px;
+    text-decoration: none;
+    display: block;
+    font-size: 14px;
+}
+
+.dropdown-menu a:hover {
+    background-color: #222;
+    color: white;
+}
+
+/* Show the menu when we add the 'show' class via JS */
+.show {
+    display: block;
+}
+
+/* Hide the actual checkbox */
+.toggle-button input {
+    display: none;
+}
+
+.button-surface {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    background-color: #333;
+    color: lime;
+    border: 1px solid lime;
+    padding: 7px 15px;
+    cursor: pointer;
+    font-family: 'Courier New', monospace;
+    font-size: 14px;
+    transition: 0.2s;
+}
+
+/* The square tick box */
+.tick-box {
+    width: 12px;
+    height: 12px;
+    border: 1px solid lime;
+    position: relative;
+    display: inline-block;
+}
+
+/* The actual "Tick" (hidden by default) */
+.tick-box::after {
+    content: '✔';
+    position: absolute;
+    top: -5px;
+    left: 1px;
+    font-size: 14px;
+    display: none;
+}
+
+/* When checked: Show the tick and highlight the button */
+.toggle-button input:checked + .button-surface .tick-box::after {
+    display: block;
+}
+
+.toggle-button input:checked + .button-surface {
+    background-color: #1a3a1a; /* Dark green glow when active */
+}
+
+.hide-speed .line {
+    grid-template-columns: 80px 140px 140px 80px;
+}
+
+.hide-speed .col-speed {
+    display: none;
+}

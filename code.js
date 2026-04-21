@@ -12,6 +12,44 @@ let packetQueue = [];
 let isFrozen = false;
 const freezeBtn = document.getElementById('freezeBtn');
 
+const settingsBtn = document.getElementById('settingsBtn');
+const dropdownContent = document.getElementById('dropdownContent');
+const clearBtn = document.getElementById('clearBtn');
+const logToggle = document.getElementById('logToggle');
+const speedToggle = document.getElementById('speedToggle');
+const monitorContainer = document.getElementById('monitor'); // Or any parent of header and logs
+
+speedToggle.addEventListener('change', () => {
+    if (speedToggle.checked) {
+        monitorContainer.classList.remove('hide-speed');
+    } else {
+        monitorContainer.classList.add('hide-speed');
+    }
+});
+
+clearBtn.addEventListener('click', (e) => {
+    e.preventDefault();
+    logs.innerHTML = ''; // Wipes the log container
+    packetQueue = [];    // Wipes the pending queue
+});
+
+// Toggle dropdown
+settingsBtn.addEventListener('click', (e) => {
+    e.stopPropagation(); // Prevents immediate closing
+    dropdownContent.classList.toggle('show');
+});
+
+dropdownContent.addEventListener('click', (e) => {
+    e.stopPropagation(); // The window will never "hear" this click
+});
+
+// Close dropdown if user clicks outside
+window.addEventListener('click', () => {
+    if (dropdownContent.classList.contains('show')) {
+        dropdownContent.classList.remove('show');
+    }
+});
+
 freezeBtn.addEventListener('click', () => {
     isFrozen = !isFrozen;
 
@@ -48,7 +86,7 @@ function processPackets() {
 
     while (packetQueue.length > 0) {
         const currentPacket = packetQueue.shift();
-        
+
         let colorClass = 'red';
         if (currentPacket[0] === 'TCP') colorClass = 'green';
         if (currentPacket[0] === 'QUIC') colorClass = 'lime';
@@ -63,7 +101,7 @@ function processPackets() {
             <span>${currentPacket[1]}</span>
             <span>${currentPacket[2]}</span>
             <span class="col-size">${currentPacket[3]} B</span>
-            <span>${currentPacket[4]} Mbps</span>
+            <span class="col-speed">${currentPacket[4]} Mbps</span>
         `;
 
         logs.appendChild(row);
@@ -73,10 +111,11 @@ function processPackets() {
         }
 
         speeds.push(currentPacket[4]);
-        if (speeds.length > 100) speeds.shift();
+        if (logToggle.checked) {
+            logs.scrollTop = logs.scrollHeight;
+        }
     }
 
-    logs.scrollTop = logs.scrollHeight;
     drawGraph();
 }
 
